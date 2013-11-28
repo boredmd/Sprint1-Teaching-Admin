@@ -14,4 +14,9 @@ public class Tutor {
 
         return Integer.parseInt(br.readLine());
     }
+
+    public int printMenuImportAttendance(BufferedReader br, Attendance a) throws IOException {
+        
+        return Integer.parseInt(br.readLine());
+    }
 }
