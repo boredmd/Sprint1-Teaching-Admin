@@ -56,10 +56,6 @@ public class Attendance {
             attended.set(studentID, true);
         else
             attended.set(studentID, false);
-    }
-    
-    public void setAttending(int studentID, boolean setAttend) {
-            attended.set(studentID, setAttend);
     } 
     
     public String getLocation() {

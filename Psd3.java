@@ -11,8 +11,8 @@ public class Psd3 {
     private static final String[] COURSE = {"Programming Language 3",
         "Professional Software Development 3", "Interactive System 3"};
     private static final String[] STUDENT = {"May Chan", "Hosehbo Lim",
-        "Porkchai Tan", "Jason Peh"};    
-    
+        "Porkchai Tan", "Jason Peh"};
+
     public static void main(String[] args) throws IOException {
         /*Init all data*/
         initResult();
@@ -84,63 +84,26 @@ public class Psd3 {
                             } while (getInput != (STUDENT.length + 1));
                             System.out.println("\n\nExported student result slip");
                         }
-                    } while (getInput != 0);
+                    } while (getInput != 3);
                     break;
                 case 2: /*-----------------Course Lecturers-------------------*/
-                    System.out.println("\n\nLogin as Course Lecturer : <NAME HERE>\n");
-                    do {
-                        CourseLecturer lecturer = new CourseLecturer();
-                        CommonMenu commonMenu = new CommonMenu();
-                        
-                        getInput = lecturer.printCourseLecturer(br);
-                        
-                        int hasFound = -1;
-
-                        if (getInput == 1) { // View Session
-                            do {
-                                getInput = commonMenu.printCalendar(br, hasFound, getInput); // Print Calendar Menu
-                                if (getInput != 0) {
-                                    if (!attendance.isEmpty()) { // Check if there are any attendance records   
-                                        for (int i = 0; i < attendance.size(); i++) {
-                                            if (attendance.get(i).getDateTime() == getInput) {
-                                                do {
-                                                    getInput = commonMenu.printMenuViewAttendance(br, attendance.get(i)); // View Attendance
-                                                    if (getInput != 0) {
-                                                        attendance.get(i).setAttending((getInput - 1));
-                                                        hasFound = 1;
-                                                    }
-                                                } while (getInput != 0);
-                                                if (hasFound == 1) {
-                                                    break;
-                                                }
-                                            } else {
-                                                hasFound = 0;
-                                            }
-                                        }
-                                    }
-                                }
-                            } while (getInput != 0 && hasFound != 1);
-                        }
-                    } while(getInput != 0);
                     break;
                 case 3: /*---------------------Tutors-------------------------*/
                     System.out.println("\n\nLogin as Tutor success\n");
                     do {
                         Tutor tutor = new Tutor();
-                        CommonMenu commonMenu = new CommonMenu();
-                        
                         getInput = tutor.printMenuTutor(br); // Display Tutor Menu
                         int hasFound = -1;
 
-                        if (getInput == 1) { // View Session
+                        if (getInput == 1) {
                             do {
-                                getInput = commonMenu.printCalendar(br, hasFound, getInput); // Print Calendar Menu
+                                getInput = tutor.printCalendar(br, hasFound, getInput); // Print Calendar Menu
                                 if (getInput != 0) {
                                     if (!attendance.isEmpty()) { // Check if there are any attendance records   
                                         for (int i = 0; i < attendance.size(); i++) {
                                             if (attendance.get(i).getDateTime() == getInput) {
                                                 do {
-                                                    getInput = commonMenu.printMenuViewAttendance(br, attendance.get(i)); // View Attendance
+                                                    getInput = tutor.printMenuViewAttendance(br, attendance.get(i));
                                                     if (getInput != 0) {
                                                         attendance.get(i).setAttending((getInput - 1));
                                                         hasFound = 1;
@@ -156,74 +119,10 @@ public class Psd3 {
                                     }
                                 }
                             } while (getInput != 0 && hasFound != 1);
-                        } else if (getInput == 2) { // Import student attendance
-                            boolean goBack = false;
-                            do {
-                                System.out.println("\n\n\n\nPlease enter the location of the csv file");
-                                System.out.println("Format C:\\temp\\abc.csv");
-                                System.out.println("0. Back");
-                                System.out.print("Path : ");
-                                String getPath = br.readLine(); //"C:\\Users\\kIaN hOcK\\Documents\\NetBeansProjects\\psd3\\111113.csv";//
-                                FileReader reader = null;
-                                String csvSplitBy = ",";
-
-                                try {
-                                    if (!getPath.matches("0")) { // If user did not enter zero (Go back)
-                                        reader = new FileReader(getPath);
-                                        Scanner line = new Scanner(reader);
-                                        ArrayList<Boolean> tempAttendance = new ArrayList<Boolean>();
-                                        int getDate = 0;
-                                        
-                                        for (int i = 0; line.hasNextLine(); i++) {
-                                            String readline = line.nextLine();
-                                            String[] words = readline.split(csvSplitBy);
-                                            String course, dateOfAttendance;
-                                            
-                                            if(words.length > 1)
-                                                words[1] = words[1].trim();
-                                            // Print first to allow user to check if the data is correct
-                                            if (i == 0){
-                                                System.out.println("\n\nCourse: " + words[0]);
-                                                System.out.println("Attendance Date: " + words[1]);
-                                                getDate = Integer.parseInt(words[1]);
-                                            }
-                                            else if (!words[0].isEmpty()) {
-                                                System.out.println((i + 1) + "Student Name : " + words[0] + ", " + words[1]);
-                                                if(words[1].trim().matches("attend"))
-                                                    tempAttendance.add(true);
-                                                else
-                                                    tempAttendance.add(false);
-                                            }
-                                        }
-                                        System.out.print("\nIs the above data correct? (Y/N) : ");
-                                        String getYesNo = br.readLine().toLowerCase();
-                                        if(getYesNo.matches("yes") || getYesNo.matches("y")) {
-                                            // Add into database System.out.println("Data Correct!");
-                                            for (int i = 0; i < attendance.size(); i++) {
-                                                if (attendance.get(i).getDateTime() == getDate) {
-                                                    for (int n = 0; n < tempAttendance.size(); n++) {
-                                                        attendance.get(i).setAttending(n, tempAttendance.get(n));
-                                                    }
-                                                    break; // Break from the loop when the correct attendance is found
-                                                }
-                                            }
-                                        }
-                                        else {
-                                            System.out.println("Please make sure your data is correct!");
-                                        }
-                                        goBack = true;
-                                    }
-                                    else
-                                        goBack = true;
-                                } finally {
-                                    if (reader != null) {
-                                        reader.close();
-                                    }
-                                }
-
-                            } while (goBack != true);
+                        } else if (getInput == 2) {
                         }
-                    } while (getInput != 0);
+
+                    } while (getInput != 3);
                     break;
             }
         } while (getInput != 4);
